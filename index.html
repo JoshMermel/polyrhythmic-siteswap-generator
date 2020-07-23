@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <style>
-  nav ul{height:200px; width:18%;}
   nav ul{overflow:hidden; overflow-y:scroll;}
-  nav ul {height: 40vh;}
+  nav ul {height: 85vh;}
   #radio label {
     float: right;
     display: inline
@@ -15,14 +14,25 @@
     width: auto;
     margin-left: 3em;
   }
+  .column {
+    float: left;
+    width: 50%;
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 </style>
 <head>
   <meta charset="utf-8">
   <title>Polyrhythmic Siteswap Generator</title>
 </head>
 <body>
-  <header>header area</header>
-  <div>
+  <h1>Polyrhythmic Siteswap Generator</h1>
+  <div class="column">
     <fieldset>
       <legend>Rhythm</legend>
       <div>
@@ -71,12 +81,14 @@
     </fieldset>
   </div>
 
-  <nav>
-    <ul id="output">
-    </ul>
-  </nav>
+  <div class="column">
+    <nav>
+      <ul id="output">
+      </ul>
+    </nav>
+  </div>
   
-  <footer> A project by Josh Mermelstein. Link to source code: </footer>
+  <footer> A project by Josh Mermelstein. Link to source code: https://github.com/JoshMermel/polyrhythmic-siteswap-generator/tree/gh-pages </footer>
 </body>
 
 <script src="stretch.js"></script>
