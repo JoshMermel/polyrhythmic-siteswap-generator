@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<style>
+  nav ul{height:200px; width:18%;}
+  nav ul{overflow:hidden; overflow-y:scroll;}
+  nav ul {height: 40vh;}
+  #radio label {
+    float: right;
+    display: inline
+  }
+  radio {
+    display: inline;
+  }
+  #radio input {
+    width: auto;
+    margin-left: 3em;
+  }
+</style>
+<head>
+  <meta charset="utf-8">
+  <title>Polyrhythmic Siteswap Generator</title>
+</head>
+<body>
+  <header>header area</header>
+  <div>
+    <fieldset>
+      <legend>Rhythm</legend>
+      <div>
+        Landings: <input type="text" id="landings" onchange="update()">
+      </div>
+      <div>
+        Period: <input type="text" id="period" onchange="update()">
+      </div>
+      <div>
+        <legend>Symmetry</legend>
+        <input type="radio" name="symmetry" value="symmetric" onchange="update()"/><label> Symmetric </label>
+        <input type="radio" name="symmetry" value="asymmetric" checked="checked" onchange="update()"/><label> Asymmetric </label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Constraints</legend>
+      <div>
+        Number of Objects: <input type="text" id="num_balls" onchange="update()"><br>
+      </div>
+      <div>
+        Max Height: <input type="text" id="max_height" onchange="update()"><br>
+      </div>
+      <div>
+        Max Multiplex at once: <input type="text" id="max_multiplicity" onchange="update()"><br>
+      </div>
+      <div>
+        <legend>Extra zeros</legend>
+        <input type="radio" name="allow_zeros" value="allowed" onchange="update()"/><label> Allowed </label>
+        <input type="radio" name="allow_zeros" value="forbidden" checked="checked" onchange="update()"/><label> Forbidden </label>
+      </div>
+      <div>
+      <div>
+        <legend>Trivial Multiplexes</legend>
+        <input type="radio" name="allow_trivial_multiplexes" value="allowed" onchange="update()"/><label> Allowed </label>
+        <input type="radio" name="allow_trivial_multiplexes" value="forbidden" checked="checked" onchange="update()"/><label> Forbidden </label>
+      </div>
+    </fieldset>
+    <fieldset>
+    <legend>Printing</legend>
+    <div>
+      Number to Print: <input type="text" id="num_to_print" onchange="update()"><br>
+    </div>
+    <div>
+      <button onclick="update()" type="button">Generate</button>
+    </div>
+    </fieldset>
+  </div>
+
+  <nav>
+    <ul id="output">
+    </ul>
+  </nav>
+  
+  <footer> A project by Josh Mermelstein. Link to source code: </footer>
+</body>
+
+<script src="stretch.js"></script>
+<script>
+window.onload = function() {
+  document.getElementById("period").value = "12";
+  document.getElementById("landings").value = "0,1,5,6,9";
+  document.getElementById("max_multiplicity").value = randInt(1,2).toString();
+  document.getElementById("num_balls").value = randInt(3,5).toString();
+  document.getElementById("num_to_print").value = "25";
+  document.getElementById("max_height").value = randInt(6,10).toString();
+  update();
+}
+function update() {
+ let period = parseInt(document.getElementById("period").value);
+ let beats = parse_list(document.getElementById("landings").value);
+ let star = (document.querySelector('input[name="symmetry"]:checked').value === "symmetric");
+
+
+ let max_multiplicity = parseInt(document.getElementById("max_multiplicity").value);
+ let num_balls = parseInt(document.getElementById("num_balls").value);
+ let num_to_print = parseInt(document.getElementById("num_to_print").value);
+ let allow_zeros = (document.querySelector('input[name="allow_zeros"]:checked').value === "allowed");
+ 
+ let filters = {
+   max_height : parseInt(document.getElementById("max_height").value),
+   reject_trivial_multiplexes : (document.querySelector('input[name="allow_trivial_multiplexes"]:checked').value === "forbidden")
+ }
+
+ document.getElementById("output").innerHTML = "";
+ for (let siteswap of get_n_siteswaps(allow_zeros, max_multiplicity,
+       num_balls, beats, period, star, filters, num_to_print)) {
+   let ul = document.getElementById("output");
+   let li = document.createElement("li");
+   li.appendChild(document.createTextNode(siteswap));
+   ul.appendChild(li);
+ }
+
+}
+</script>
+</html>
