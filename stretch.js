@@ -93,6 +93,7 @@ function translate_siteswap(siteswap, beats, period, star) {
 
 function print_siteswap(siteswap, period, star) {
   let last_throw_was_l = true;
+  let is_first_async = true;
   let ret = '';
   for (let beat = 0; beat < period; beat += 2) {
     // sync.
@@ -109,15 +110,17 @@ function print_siteswap(siteswap, period, star) {
       }
     } else if (siteswap[beat] !== undefined) {
       // left only.
-      if (last_throw_was_l) {
+      if (last_throw_was_l || is_first_async) {
         ret += 'L';
+        is_first_async = false;
       }
       ret += toMultiToss(siteswap[beat]);
       last_throw_was_l = true;
     } else if (siteswap[beat+1] !== undefined) {
       // right only.
-      if (!last_throw_was_l) {
+      if (!last_throw_was_l || is_first_async) {
         ret += 'R';
+        is_first_async = false;
       }
       last_throw_was_l = false;
       ret += toMultiToss(siteswap[beat+1]);
@@ -125,6 +128,7 @@ function print_siteswap(siteswap, period, star) {
       // no throws.
       ret += 0;
       last_throw_was_l = !last_throw_was_l;
+      is_first_async = false;
     }
   }
   return ret + (star ? '*' : '');
