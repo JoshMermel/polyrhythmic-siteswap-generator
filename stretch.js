@@ -259,7 +259,48 @@ function contains_trivial_multiplex(siteswap) {
   return false;
 }
 
-function matches_filters(siteswap, filters) {
+function contains_squeeze(siteswap, len) {
+  let landings = [];
+  for (let i = 0; i < siteswap.length; i++) {
+    let beat = siteswap[i];
+    if (beat !== undefined) {
+      for (let toss of beat) {
+        let landing = i + (2 * toss.height);
+        if ((toss.height + (toss.x ? 1 : 0)) % 2 !== 0) {
+          if (i % 2 === 0) {
+            landing += 1;
+          } else {
+            landing -= 1;
+          }
+        }
+        landing %= len;
+        if (landings[landing] === undefined) {
+          landings[landing] = [];
+        }
+        landings[landing].push(toss);
+      }
+    }
+  }
+
+  for (let i = 0; i < landings.length; i++) {
+    let beat = landings[i];
+    let nontrival = 0;
+    if (beat !== undefined && beat.length > 1) {
+      for (let toss of beat) {
+        if (!((toss.height == 2 && !toss.x) || (toss.height === 1 && toss.x))) {
+          nontrival += 1;
+        }
+      }
+    }
+    if (nontrival > 1) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function matches_filters(siteswap, len, filters) {
   // contains 0x
   if (contains_0x(siteswap)) {
     return false;
@@ -277,7 +318,11 @@ function matches_filters(siteswap, filters) {
     return false;
   }
 
-  // TODO(jmerm): squeezes
+  // squeeze catches
+  if (filters.reject_squeezes && contains_squeeze(siteswap, len)) {
+    return false;
+  }
+
   // TODO(jmerm): max multiplex split
 
   return true;
@@ -301,7 +346,7 @@ function get_n_siteswaps(allow_zeros, max_multiplicity, num_balls, beats,
     if (worth_translating(hand, num_balls)) {
       let siteswap = convertCards(hand);
       let translated = translate_siteswap(siteswap, beats, period, star);
-      if (matches_filters(translated, filters)) {
+      if (matches_filters(translated, period, filters)) {
         seen.add(print_siteswap(translated, period, star));
       }
       if (seen.size >= num_to_print) {

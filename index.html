@@ -69,6 +69,11 @@
         <input type="radio" name="allow_trivial_multiplexes" value="allowed" onchange="update()"/><label> Allowed </label>
         <input type="radio" name="allow_trivial_multiplexes" value="forbidden" checked="checked" onchange="update()"/><label> Forbidden </label>
       </div>
+      <div>
+        <legend>Squeeze Catches</legend>
+        <input type="radio" name="allow_squeeze_catches" value="allowed" onchange="update()"/><label> Allowed </label>
+        <input type="radio" name="allow_squeeze_catches" value="forbidden" checked="checked" onchange="update()"/><label> Forbidden </label>
+      </div>
     </fieldset>
     <fieldset>
     <legend>Printing</legend>
@@ -115,7 +120,8 @@ function update() {
  
  let filters = {
    max_height : parseInt(document.getElementById("max_height").value),
-   reject_trivial_multiplexes : (document.querySelector('input[name="allow_trivial_multiplexes"]:checked').value === "forbidden")
+   reject_trivial_multiplexes : (document.querySelector('input[name="allow_trivial_multiplexes"]:checked').value === "forbidden"),
+   reject_squeezes : (document.querySelector('input[name="allow_squeeze_catches"]:checked').value === "forbidden"),
  }
 
  document.getElementById("output").innerHTML = "";
